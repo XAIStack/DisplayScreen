@@ -1,0 +1,23 @@
+[Unit]
+Description=LEVETOP serial front-panel display (displayshow)
+After=local-fs.target network-online.target systemd-udev-settle.service
+Wants=network-online.target
+StartLimitIntervalSec=0
+
+[Service]
+Type=simple
+WorkingDirectory=/opt/displayshow
+Environment=PYTHONUNBUFFERED=1
+ExecStartPre=/opt/displayshow/wait_serial.sh
+ExecStart=/opt/displayshow/.venv/bin/python -u /opt/displayshow/screen_updater.py
+Restart=always
+RestartSec=5
+TimeoutStopSec=30
+KillSignal=SIGTERM
+SupplementaryGroups=dialout
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=display-screen
+
+[Install]
+WantedBy=multi-user.target
